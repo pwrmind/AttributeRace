@@ -104,9 +104,9 @@
       filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
     }
     
-    .icon.outlined {
-      -webkit-text-stroke: 2px;
-      color: transparent;
+    .outlined {
+      -webkit-text-stroke: 2px currentColor;
+      color: transparent !important;
     }
     
     .rules {
@@ -336,15 +336,19 @@
       return false;
     }
     
-    // Проверка валидности комбинации
+    // ИСПРАВЛЕННАЯ ПРОВЕРКА КОМБИНАЦИИ
     function isCombinationValid(cards) {
+      // Проверяем каждый атрибут отдельно
       const attributes = ['shape', 'color', 'fill', 'count'];
       
       return attributes.every(attr => {
         const values = cards.map(card => card[attr]);
         const uniqueValues = new Set(values);
         
-        return uniqueValues.size === 1 || uniqueValues.size === 3;
+        // Комбинация валидна если:
+        // 1. Все значения одинаковы (uniqueValues.size === 1)
+        // 2. Все значения разные (uniqueValues.size === 3)
+        return uniqueValues.size === 1 || uniqueValues.size === cards.length;
       });
     }
     
@@ -479,11 +483,13 @@
           const icon = document.createElement('i');
           
           // Определяем классы иконки
-          let iconClass = 'icon fa-solid ';
+          let iconClass = 'icon ';
+          iconClass += card.fill === 'solid' ? 'fa-solid ' : 'fa-regular ';
+          
           switch (card.shape) {
             case 'circle': iconClass += 'fa-circle'; break;
             case 'square': iconClass += 'fa-square'; break;
-            case 'triangle': iconClass += 'fa-caret-up'; break;
+            case 'triangle': iconClass += 'fa-triangle'; break;
           }
           
           if (card.fill === 'outlined') {
